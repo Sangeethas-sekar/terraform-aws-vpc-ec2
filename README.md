@@ -1,69 +1,104 @@
-# Terraform AWS VPC and EC2 Infrastructure
+# Terraform AWS Infrastructure with GitHub Actions CI/CD
 
 ## Project Overview
 
-This project provisions a complete AWS infrastructure on AWS using Terraform. The infrastructure includes a custom VPC, public subnet, Internet Gateway, route table, security group, and an Ubuntu EC2 instance. Nginx is installed automatically using a User Data script.
+This project provisions a production-style AWS infrastructure using Terraform and automates deployments using GitHub Actions.
 
 ## Architecture
 
-Internet
-    │
-Internet Gateway
-    │
-Custom VPC (10.0.0.0/16)
-    │
-Public Subnet (10.0.1.0/24)
-    │
-Route Table
-    │
-Security Group
-    │
-Ubuntu EC2 Instance
-    │
-Nginx Web Server
-
-## AWS Services Used
-
-- Amazon VPC
-- Internet Gateway
+- Custom VPC
 - Public Subnet
+- Internet Gateway
 - Route Table
+- Route Table Association
 - Security Group
-- Amazon EC2
-- IAM Role
+- Ubuntu EC2 Instance
+- Nginx Web Server (User Data)
+- Remote Terraform State (Amazon S3)
+- GitHub Actions CI
+- GitHub Actions CD
+- GitHub Actions Destroy Workflow
+
+## Technologies Used
+
 - Terraform
-- Ubuntu 22.04
+- AWS EC2
+- AWS VPC
+- AWS S3 (Remote Backend)
+- IAM
+- Git
+- GitHub
+- GitHub Actions
+- Ubuntu Linux
 - Nginx
+
+## CI Pipeline
+
+Automatically runs on every push to the `main` branch.
+
+- Terraform Format
+- Terraform Init
+- Terraform Validate
+- Terraform Plan
+
+## CD Pipeline
+
+Manual deployment using GitHub Actions.
+
+Performs:
+
+- Terraform Init
+- Terraform Plan
+- Terraform Apply
+
+## Destroy Pipeline
+
+Manual workflow to safely destroy all Terraform-managed infrastructure.
+
+Performs:
+
+- Terraform Init
+- Terraform Destroy
+
+## Remote State
+
+Terraform state is stored securely in an Amazon S3 bucket.
+
+Benefits:
+
+- Shared state between developers and GitHub Actions
+- Centralized state management
+- Consistent infrastructure deployments
 
 ## Project Structure
 
 ```
-terraform-vpc/
+terraform-aws-vpc-ec2/
+│
+├── .github/
+│   └── workflows/
+│       ├── terraform.yml
+│       ├── terraform-cd.yml
+│       └── terraform-destroy.yml
+│
+├── scripts/
+│   └── userdata.sh
+│
+├── backend.tf
 ├── provider.tf
 ├── variables.tf
-├── terraform.tfvars
+├── data.tf
 ├── vpc.tf
-├── igw.tf
 ├── subnet.tf
+├── igw.tf
 ├── routetable.tf
 ├── sgroup.tf
-├── data.tf
 ├── ec2.tf
 ├── outputs.tf
-├── .gitignore
-├── README.md
-└── scripts/
-    └── userdata.sh
+└── README.md
 ```
 
-## Prerequisites
-
-- AWS Account
-- IAM Role or AWS CLI configured
-- Terraform
-- Git
-
-## Deployment
+## Deployment:
 
 ```bash
 terraform init
@@ -77,30 +112,13 @@ terraform apply
 terraform destroy
 ```
 
-## Features
+## Future Enhancements
 
-- Infrastructure as Code (Terraform)
-- Custom VPC
-- Public Subnet
-- Internet Gateway
-- Route Table Association
-- Security Group
-- Ubuntu EC2 Instance
-- Automatic Nginx Installation using User Data
-- Outputs Public IP and DNS
-
-## Outputs
-
-After deployment, Terraform displays:
-
-- VPC ID
-- VPC ARN
-- VPC CIDR
-- Subnet ID
-- EC2 Instance ID
-- Public IP
-- Public DNS
-
-## Author
-
-**Sangeetha S**
+- Remote state locking
+- Auto Scaling Group
+- Application Load Balancer
+- Private Subnets
+- NAT Gateway
+- Multi-AZ Deployment
+- Terraform Modules
+- GitHub OIDC Authentication
