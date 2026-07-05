@@ -7,6 +7,6 @@ resource "aws_instance" "ec2" {
   key_name               = "terra-key"
   user_data              = file("${path.module}/scripts/userdata.sh")
   tags = {
-    Name = "Web-Server"
+    Name = "Terra-Web-Server"
   }
 }
